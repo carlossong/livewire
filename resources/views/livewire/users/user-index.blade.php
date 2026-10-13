@@ -141,17 +141,17 @@
                                 @endcan
 
                                 @can('delete', $user)
-                                    <button type="button"
-                                            wire:click="delete({{ $user->id }})"
-                                            wire:confirm="Tem certeza de que deseja excluir o usuário '{{ $user->name }}'? Esta ação não pode ser desfeita."
-                                            wire:loading.attr="disabled"
-                                            class="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-rose-700 dark:text-rose-400 hover:text-white bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-600 dark:hover:bg-rose-600 rounded-md transition-colors disabled:opacity-50"
-                                            title="Excluir Usuário">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
+                                    <flux:button
+                                        variant="ghost"
+                                        size="xs"
+                                        icon="trash"
+                                        icon:variant="outline"
+                                        wire:click="confirmDelete({{ $user->id }})"
+                                        class="text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/50"
+                                        title="Excluir Usuário"
+                                    >
                                         Excluir
-                                    </button>
+                                    </flux:button>
                                 @else
                                     @if ($user->id === auth()->id())
                                         <span class="inline-flex items-center px-2 py-1 text-xs text-neutral-400 dark:text-neutral-500 italic">
@@ -187,4 +187,39 @@
             </div>
         @endif
     </div>
+
+    {{-- Modal de Confirmação de Exclusão do Flux --}}
+    <flux:modal
+        name="delete-user-modal"
+        class="max-w-md md:min-w-md"
+        @close="closeDeleteModal"
+        wire:model="showDeleteModal"
+    >
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <flux:heading size="lg">Excluir Usuário</flux:heading>
+                <flux:subheading>
+                    Tem certeza de que deseja excluir o usuário <strong class="text-neutral-900 dark:text-neutral-100 font-semibold">"{{ $userToDeleteName }}"</strong>? Esta ação é irreversível e removerá todos os acessos associados.
+                </flux:subheading>
+            </div>
+
+            <div class="flex gap-3 justify-end">
+                <flux:button
+                    variant="outline"
+                    wire:click="closeDeleteModal"
+                >
+                    Cancelar
+                </flux:button>
+
+                <flux:button
+                    variant="danger"
+                    wire:click="deleteUser"
+                    wire:loading.attr="disabled"
+                >
+                    <span wire:loading.remove wire:target="deleteUser">Excluir Usuário</span>
+                    <span wire:loading wire:target="deleteUser">Excluindo...</span>
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
 </div>

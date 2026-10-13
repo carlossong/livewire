@@ -3,6 +3,7 @@
 namespace App\Livewire\Users;
 
 use App\Models\User;
+use Flux\Flux;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
@@ -18,6 +19,12 @@ class UserIndex extends Component
 
     #[Url(history: true)]
     public string $search = '';
+
+    public bool $showDeleteModal = false;
+
+    public ?int $userToDeleteId = null;
+
+    public string $userToDeleteName = '';
 
     /**
      * Reseta a paginação ao digitar na busca.
@@ -36,15 +43,48 @@ class UserIndex extends Component
     }
 
     /**
-     * Exclui um usuário do sistema.
-     * Regra de Ouro: impede a exclusão da própria conta logada.
+     * Abre a modal de confirmação do Flux.
      */
-    public function delete(int $id): void
+    public function confirmDelete(int $id): void
     {
         $user = User::findOrFail($id);
 
         if ($user->id === auth()->id()) {
-            session()->flash('error', 'Você não pode excluir sua própria conta.');
+            Flux::toast(variant: 'danger', text: 'Você não pode excluir sua própria conta.');
+
+            return;
+        }
+
+        $this->userToDeleteId = $user->id;
+        $this->userToDeleteName = $user->name;
+        $this->showDeleteModal = true;
+    }
+
+    /**
+     * Fecha a modal de confirmação de exclusão.
+     */
+    public function closeDeleteModal(): void
+    {
+        $this->showDeleteModal = false;
+        $this->userToDeleteId = null;
+        $this->userToDeleteName = '';
+    }
+
+    /**
+     * Exclui o usuário após confirmação na modal.
+     * Regra de Ouro: impede a exclusão da própria conta logada.
+     */
+    public function deleteUser(): void
+    {
+        if (! $this->userToDeleteId) {
+            return;
+        }
+
+        $user = User::findOrFail($this->userToDeleteId);
+
+        if ($user->id === auth()->id()) {
+            Flux::toast(variant: 'danger', text: 'Você não pode excluir sua própria conta.');
+            $this->closeDeleteModal();
 
             return;
         }
@@ -54,7 +94,18 @@ class UserIndex extends Component
         $userName = $user->name;
         $user->delete();
 
+        $this->closeDeleteModal();
+
+        Flux::toast(variant: 'success', text: "Usuário '{$userName}' excluído com sucesso!");
         session()->flash('success', "Usuário '{$userName}' excluído com sucesso!");
+    }
+
+    /**
+     * Mantém compatibilidade com chamadas diretas.
+     */
+    public function delete(int $id): void
+    {
+        $this->confirmDelete($id);
     }
 
     /**
