@@ -78,11 +78,11 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'pt_BR'),
+    'locale' => env('APP_LOCALE') && env('APP_LOCALE') !== 'en' ? env('APP_LOCALE') : 'pt_BR',
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'pt_BR'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE') && env('APP_FALLBACK_LOCALE') !== 'en' ? env('APP_FALLBACK_LOCALE') : 'pt_BR',
 
-    'faker_locale' => env('APP_FAKER_LOCALE', 'pt_BR'),
+    'faker_locale' => env('APP_FAKER_LOCALE') && env('APP_FAKER_LOCALE') !== 'en_US' ? env('APP_FAKER_LOCALE') : 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------
