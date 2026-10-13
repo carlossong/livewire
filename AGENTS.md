@@ -43,8 +43,9 @@ Este projeto possui skills específicas configuradas em `skills/` e plugins da I
   - Componentes de página inteira utilizam `#[Layout('layouts.app')]`.
   - Use `#[Title('...')]` para definição de título dinâmico da página.
 - **Flux UI**:
-  - Priorize os componentes nativos do Flux (`<flux:button>`, `<flux:input>`, `<flux:sidebar>`, `<flux:table>`, `<flux:toast>`, etc.) antes de criar HTML customizado.
+  - Priorize os componentes nativos do Flux (`<flux:button>`, `<flux:input>`, `<flux:sidebar>`, `<flux:table>`, `<flux:toast>`, `<flux:modal>`, etc.) antes de criar HTML customizado.
   - Ícones: Utilize os ícones integrados do Heroicons ou Lucide (`icon="nome-do-icone"`).
+  - **Modais de Confirmação Obrigatórios**: Toda ação destrutiva ou de confirmação (exclusão, cancelamento, revogação) deve obrigatoriamente usar `<flux:modal>`. É proibido usar o alerta/diálogo nativo do navegador (`wire:confirm`).
 - **Layouts**:
   - Layout principal da aplicação: `resources/views/layouts/app.blade.php`, que invoca `<x-layouts::app.sidebar>` e envolve o conteúdo em `<flux:main>`.
 - **RBAC (Controle de Acesso)**:
@@ -113,7 +114,10 @@ Este projeto possui skills específicas configuradas em `skills/` e plugins da I
 - **Navegação SPA**: Utilize `wire:navigate` em links internos (`<a>` e `<flux:sidebar.item>`) para carregamento instantâneo sem refresh de página.
 - **Loops & Chaves**: Sempre inclua `wire:key` em elementos dentro de loops `@foreach` (ex: `wire:key="item-{{ $item->id }}"`).
 - **Estados de Carregamento**: Adicione feedback visual em ações que realizam mutação (`wire:loading`, `wire:loading.attr="disabled"`).
-- **Confirmação de Ações Destrutivas**: Use `wire:confirm="Tem certeza...?"` em botões de exclusão ou ações irreversíveis.
+- **Confirmação de Ações Destrutivas (Flux Modal Obrigatório)**:
+  - **NUNCA** utilize `wire:confirm` ou diálogos nativos do navegador (`window.confirm`).
+  - **SEMPRE** utilize o componente `<flux:modal>` controlado pelo estado do Livewire (ex: `$showDeleteModal`, métodos `confirmDelete($id)` e `deleteRecord()`).
+  - Forneça feedback visual pós-ação utilizando `Flux::toast(variant: 'success', text: '...')`.
 - **Reatividade com Debounce**: Em campos de busca, utilize debounce (`wire:model.live.debounce.300ms="search"`).
 
 === pint/core rules ===
