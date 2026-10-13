@@ -1,5 +1,5 @@
 {
-    "Dashboard": "Painel",
+    "Dashboard": "Dashboard",
     "Platform": "Plataforma",
     "Administration": "Administração",
     "Users": "Usuários",
@@ -97,5 +97,8 @@
     "Welcome": "Bem-vindo",
     "Users Management": "Gerenciamento de Usuários",
     "New User": "Novo Usuário",
-    "Edit User": "Editar Usuário"
+    "Edit User": "Editar Usuário",
+    "Perfis de Acesso": "Perfis de Acesso",
+    "Roles": "Perfis de Acesso",
+    "Roles & Permissions": "Perfis & Permissões"
 }

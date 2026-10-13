@@ -57,6 +57,12 @@ class RoleSeeder extends Seeder
                 'reports.financial',
                 'reports.stock',
             ],
+            'Perfis' => [
+                'roles.view',
+                'roles.create',
+                'roles.edit',
+                'roles.delete',
+            ],
         ];
 
         foreach ($modulesPermissions as $module => $permissions) {
